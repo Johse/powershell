@@ -1,5 +1,5 @@
 <#
-# Script: Windows 10 Error Correction Toolset v1.0
+# Script: Windows 10 Error Correction Toolset v1.1
 # Author: John Sebastian 
 # Source available @ https://github.com/Johse/powershell/
 # License: MIT License
@@ -26,6 +26,8 @@ function loadMainMenu()
     Write-Host "`n`t`t8: Force Windows Update to re-download folders"
     Write-Host "`n`tWindows Defender:"
     Write-Host "`n`t`t9: Clear  Protection History"
+    Write-Host "`n`tTemp. files:"
+    Write-Host "`n`t`t0: Clear  temp. files"
     Write-Host "`n`n`tEnter 'q' to quit."
     $mainMenu = Read-Host “`n Enter selection...” 
     switch ($mainMenu)
@@ -83,6 +85,9 @@ function loadMainMenu()
       9{
         subMenuC
        } 
+      0{
+        subMenuD
+       }
     "q"{
         $loopMainMenu = $false
         $Host.UI.RawUI.WindowTitle = "Windows PowerShell" # Set back to standard.
@@ -165,6 +170,7 @@ function subMenuB()
       }
   }
 }
+
 function subMenuC() 
 {
   [bool]$loopSubMenu = $true
@@ -179,6 +185,38 @@ function subMenuC()
              Clear-Host
              Write-Host "Removing Windows Defender History items..."
              Remove-Item -Path "C:\ProgramData\Microsoft\Windows Defender\Scans\History\Service\*" -Recurse
+             pause
+             $loopSubMenu = $false
+          }
+       'n'{
+             $loopSubMenu = $false
+          }
+   default{
+             Write-Host "`tA valid selection was not made. Pls. enter a valid selection."
+             sleep -Seconds 1
+          }
+      }
+  }
+}
+function subMenuD() 
+{
+  [bool]$loopSubMenu = $true
+  while ($loopSubMenu)
+  {
+    Clear-Host
+    Write-Host "`n`tThis will remove ALL items in the Temp directory!"
+    $subMenu = Read-Host “`n`tDo you want to proceed? (y/n)?”
+      switch ($subMenu)
+      {
+       'y'{
+             Clear-Host
+             Write-Host "Removing Temp items..."
+             #Remove-Item -Path "C:\Users\johns\AppData\Local\Temp*" -Recurse
+             $tempfolders = @(“C:\Windows\Temp\*”, “C:\Windows\Prefetch\*”, “C:\Documents and Settings\*\Local Settings\temp\*”, “C:\Users\*\Appdata\Local\Temp\*”)
+             Remove-Item $tempfolders -force -recurse > $null
+             cls
+             #Remove-Item -Path $env:TEMP -Recurse -Force > $null
+             #cls
              pause
              $loopSubMenu = $false
           }
